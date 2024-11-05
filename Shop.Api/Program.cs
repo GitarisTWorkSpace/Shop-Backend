@@ -1,11 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.Data;
+using Shop.Data.Repositories;
+using Shop.Core.Stores;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IUserStore, UserRepository>();
 
 builder.Services.AddDbContext<AppDbContext>(
     options =>
