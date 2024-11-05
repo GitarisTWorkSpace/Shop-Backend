@@ -1,15 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Shop.Core.Models;
-using Shop.Data.Repositories.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shop.Core.Stores;
 
 namespace Shop.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : IUserStore
     {
         private readonly AppDbContext _context;
 
@@ -40,10 +35,10 @@ namespace Shop.Data.Repositories
 
         public async Task<User> GetByUserName(string userName)
         {
-            return await DefaultIncludes().Where(u => u.Alias == userName).FirstAsync();
+            return await DefaultIncludes().Where(u => u.Name == userName).FirstAsync();
         }
 
-        public async Task<long> TaskCreateUser(User user)
+        public async Task<long> CreateUser(User user)
         {
             await _context.AddAsync(user);
             return await _context.SaveChangesAsync();
@@ -54,12 +49,11 @@ namespace Shop.Data.Repositories
             await _context.Users
                 .Where(u => u.Id == user.Id)
                 .ExecuteUpdateAsync(s => s
-                    .SetProperty(u => u.Alias, u => user.Alias)
                     .SetProperty(u => u.Name, u => user.Name)
-                    .SetProperty(u => u.LastName, u => user.LastName)
+                    .SetProperty(u => u.Surname, u => user.Surname)
                     .SetProperty(u => u.Email, u => user.Email)
                     .SetProperty(u => u.PhoneNumber, u => user.PhoneNumber)
-                    .SetProperty(u => u.UpdateAt, u => DateTime.UtcNow));
+                    .SetProperty(u => u.UpdatedAt, u => DateTime.UtcNow));
 
             return user.Id;
         }        
@@ -74,11 +68,6 @@ namespace Shop.Data.Repositories
         public IQueryable<User> DefaultIncludes()
         {
             return _context.Users.AsNoTracking();
-        }
-
-        public Task<long> CreateUser(User user)
-        {
-            throw new NotImplementedException();
         }
     }
 }

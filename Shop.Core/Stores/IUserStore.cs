@@ -1,13 +1,8 @@
 ﻿using Shop.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Shop.Data.Repositories.Interfaces
+namespace Shop.Core.Stores
 {
-    public interface IUserRepository
+    public interface IUserStore
     {
         Task<List<User>> GetAll();
 
@@ -17,7 +12,7 @@ namespace Shop.Data.Repositories.Interfaces
 
         Task<User> GetByEmail(string email);
 
-        Task<User> GetByPhoneNumber(string phoneNumber);        
+        Task<User> GetByPhoneNumber(string phoneNumber);
 
         Task<long> CreateUser(User user);
 
