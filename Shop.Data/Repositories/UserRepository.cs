@@ -40,6 +40,9 @@ namespace Shop.Data.Repositories
 
         public async Task<long> CreateUser(User user)
         {
+            user.CreatedAt = DateTime.UtcNow.AddHours(TimeZoneInfo.Local.BaseUtcOffset.Hours);
+            user.UpdatedAt = DateTime.UtcNow.AddHours(TimeZoneInfo.Local.BaseUtcOffset.Hours);
+
             await _context.AddAsync(user);
             return await _context.SaveChangesAsync();
         }

@@ -1,4 +1,4 @@
 ﻿namespace Shop.Api.Contracts.User
 {
-    public record RegistrationUserRequest(string Name, string? Surname, string email, string? phoneNumber);
+    public record RegistrationUserRequest(string name, string? surname, string email, string? phoneNumber);
 }
