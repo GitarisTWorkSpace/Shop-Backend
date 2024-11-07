@@ -1,5 +1,6 @@
 ﻿using Shop.Core.Stores;
 using Shop.Core.Models;
+using Shop.Infrastructure.JWT;
 
 namespace Shop.Application.Services
 {
@@ -7,16 +8,18 @@ namespace Shop.Application.Services
     {
         private readonly IUserStore _userStore;
         private readonly ILoginCodeStore _loginCodeStore;
+        private readonly IJwtProvider _jwtProvider;
 
-        public LoginService(IUserStore userStore, ILoginCodeStore loginCodeStore) 
+        public LoginService(IUserStore userStore, ILoginCodeStore loginCodeStore, IJwtProvider jwtProvider) 
         {
             _userStore = userStore;
             _loginCodeStore = loginCodeStore;
+            _jwtProvider = jwtProvider;
         }
 
         public async Task<ServiceResult> LoginUser(string email)
         {
-            var emailValid = ValidateEmail(email);
+            var emailValid = EmailValidation(email);
             
             if (!emailValid.Status) return emailValid;
 
@@ -39,7 +42,7 @@ namespace Shop.Application.Services
 
         public async Task<ServiceResult> ConfirmLogin(string email, string code)
         {
-            var emailValid = ValidateEmail(email);
+            var emailValid = EmailValidation(email);
 
             if (!emailValid.Status) return emailValid;
 
@@ -53,10 +56,12 @@ namespace Shop.Application.Services
             if (code != accessСode)
                 return new ServiceResult(false, "Неверный код");
 
-            return new ServiceResult(true, "Код подвержден");
+            var token = _jwtProvider.GenerateToken(user);
+
+            return new ServiceResult(true, token);
         }
 
-        private ServiceResult ValidateCode(string code) 
+        private ServiceResult CodeValidation(string code) 
         {
             if (code.Length < 0)
                 return new ServiceResult(false, "Пустой код");
@@ -70,7 +75,7 @@ namespace Shop.Application.Services
             return new ServiceResult(true, "Код валиден");
         }
 
-        private ServiceResult ValidateEmail(string email)
+        private ServiceResult EmailValidation(string email)
         {
             if (email.Length == 0)
                 return new ServiceResult(false, "Почта не может быть пустой");

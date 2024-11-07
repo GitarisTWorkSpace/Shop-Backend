@@ -16,7 +16,7 @@ namespace Shop.Data.Repositories
 
         public async Task<string> GetCodeByUser(long userId)
         {
-            LoginCode loginCode = await DefaultIncludes().Where(c => c.UserId == userId && c.CreatedAt >= DateTime.UtcNow.AddHours(TimeZoneInfo.Local.BaseUtcOffset.Hours)).FirstAsync();
+            LoginCode loginCode = await DefaultIncludes().Where(c => c.UserId == userId && c.CreatedAt >= DateTime.UtcNow).FirstAsync();
 
             return loginCode.Code;
         }
@@ -26,7 +26,7 @@ namespace Shop.Data.Repositories
             LoginCode loginCode = new LoginCode();
             loginCode.UserId = userId;            
             loginCode.Code = code;
-            loginCode.CreatedAt = DateTime.UtcNow.AddHours(TimeZoneInfo.Local.BaseUtcOffset.Hours).AddMinutes(15);
+            loginCode.CreatedAt = DateTime.UtcNow.AddMinutes(15);
 
             await _context.AddAsync(loginCode);
             return await _context.SaveChangesAsync();
