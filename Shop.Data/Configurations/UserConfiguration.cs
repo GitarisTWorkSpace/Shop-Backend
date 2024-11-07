@@ -10,17 +10,10 @@ namespace Shop.Data.Configurations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(u => u.Alias)
-                .HasMaxLength(256)
-                .IsRequired();
-
-            builder.HasIndex(u => u.Alias)
-                .IsUnique();
-
             builder.Property(u => u.Name)
                 .HasMaxLength(256);
 
-            builder.Property(u => u.LastName)
+            builder.Property(u => u.Surname)
                 .HasMaxLength(256);
 
             builder.Property(u => u.Email)
@@ -36,10 +29,10 @@ namespace Shop.Data.Configurations
             builder.HasIndex(u => u.PhoneNumber)
                 .IsUnique();
 
-            builder.Property(u => u.CreateAt)
+            builder.Property(u => u.CreatedAt)
                 .HasDefaultValue(DateTime.UtcNow);
 
-            builder.Property(u => u.UpdateAt)
+            builder.Property(u => u.UpdatedAt)
                 .HasDefaultValue(DateTime.UtcNow);
         }
     }
