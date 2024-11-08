@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Shop.Api.Controllers
 {
@@ -7,6 +8,7 @@ namespace Shop.Api.Controllers
     public class ProductController : ControllerBase
     {
         // GET: api/<ProductController>
+        [Authorize]
         [HttpGet]
         public IEnumerable<string> Get()
         {

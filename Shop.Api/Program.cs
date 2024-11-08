@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Shop.Api.Extensions;
 using Shop.Data;
-using Shop.Data.Repositories;
-using Shop.Core.Stores;
-using Shop.Application.Services;
 using Shop.Infrastructure.JWT;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,13 +9,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUserStore, UserRepository>();
-builder.Services.AddScoped<ILoginCodeStore, LoginCodeRepository>();
 
-builder.Services.AddScoped<RegistrationService>();
-builder.Services.AddScoped<LoginService>();
 
-builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+builder.Services.RegisterServices();
+
+builder.Services.RegisterRepositories();
+
+builder.Services.RegisterInfrastructures();
 
 builder.Services.AddDbContext<AppDbContext>(
     options =>
@@ -26,6 +24,8 @@ builder.Services.AddDbContext<AppDbContext>(
     });
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
+
+builder.Services.AddApiAuthentication();
 
 var app = builder.Build();
 
@@ -38,6 +38,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 
