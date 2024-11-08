@@ -16,6 +16,7 @@ namespace Shop.Api.Controllers
         }
 
         // GET api/<ProductController>/5
+        [Authorize]
         [HttpGet("{id}")]
         public string Get(int id)
         {

@@ -44,6 +44,15 @@ namespace Shop.Api.Extensions
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            context.Token = context.Request.Cookies["favourite-displace"];
+                            return Task.CompletedTask;
+                        }
+                    };
+
                     options.TokenValidationParameters = new()
                     {
                         ValidateIssuer = false,
@@ -51,7 +60,7 @@ namespace Shop.Api.Extensions
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-                    };
+                    };                    
                 });
 
             services.AddAuthorization();

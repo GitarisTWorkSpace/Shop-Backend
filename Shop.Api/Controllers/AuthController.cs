@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.Api.Contracts.User;
 using Shop.Application.Services;
+using System.Net;
 
 namespace Shop.Api.Controllers
 {
@@ -29,14 +30,16 @@ namespace Shop.Api.Controllers
 
         [Route("confirm/")]
         [HttpPost]
-        public async Task<ActionResult> ConfirmLogin([FromBody] UserCodeConfirmRequest confirmRequest)
+        public async Task<ActionResult> ConfirmLogin(UserCodeConfirmRequest confirmRequest)
         {
             var result = await _loginService.ConfirmLogin(confirmRequest.email, confirmRequest.code);
 
             if (!result.Status) 
                 return BadRequest(result.Error);
 
-            return Ok(result.Error);
+            Response.Cookies.Append("favourite-displace", result.Error);
+
+            return Ok("пользователь аутентифицирован");
         }
     }
 }
