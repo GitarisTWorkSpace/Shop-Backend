@@ -21,6 +21,7 @@ namespace Shop.Api.Controllers
         public async Task<ActionResult> Registration([FromBody] RegistrationUserRequest user)
         {
             var result = await _registrationService.RegisterUser(user.name, user.surname, user.email, user.phoneNumber);
+
             if (!result.Status)
                 return BadRequest(result.Error);
 
