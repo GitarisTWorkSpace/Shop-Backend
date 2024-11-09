@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Shop.Api.Controllers
@@ -8,17 +9,17 @@ namespace Shop.Api.Controllers
     public class ProductController : ControllerBase
     {
         // GET: api/<ProductController>
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<string>> Get()
         {
             return new string[] { "value1", "value2" };
         }
 
         // GET api/<ProductController>/5
-        [Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<string> Get(int id)
         {
             return "value";
         }

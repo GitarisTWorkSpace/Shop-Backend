@@ -1,4 +1,5 @@
-﻿using Shop.Core.Models;
+﻿using Shop.Core;
+using Shop.Core.Models;
 using Shop.Core.Stores;
 
 namespace Shop.Application.Services

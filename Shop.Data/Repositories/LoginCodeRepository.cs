@@ -16,7 +16,10 @@ namespace Shop.Data.Repositories
 
         public async Task<string> GetCodeByUser(long userId)
         {
-            LoginCode loginCode = await DefaultIncludes().Where(c => c.UserId == userId && c.CreatedAt >= DateTime.UtcNow).FirstAsync();
+            LoginCode loginCode = await DefaultIncludes().Where(c => c.UserId == userId && c.CreatedAt >= DateTime.UtcNow).FirstOrDefaultAsync();
+
+            if (loginCode == null)
+                return null;
 
             return loginCode.Code;
         }

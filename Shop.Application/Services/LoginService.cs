@@ -1,6 +1,9 @@
-﻿using Shop.Core.Stores;
+﻿using Shop.Core;
+using Shop.Core.Stores;
 using Shop.Core.Models;
 using Shop.Infrastructure.JWT;
+using Shop.Infrastructure.Email.Service;
+using System.Globalization;
 
 namespace Shop.Application.Services
 {
@@ -9,12 +12,14 @@ namespace Shop.Application.Services
         private readonly IUserStore _userStore;
         private readonly ILoginCodeStore _loginCodeStore;
         private readonly IJwtProvider _jwtProvider;
+        private readonly IEmailService _emailService;
 
-        public LoginService(IUserStore userStore, ILoginCodeStore loginCodeStore, IJwtProvider jwtProvider) 
+        public LoginService(IUserStore userStore, ILoginCodeStore loginCodeStore, IJwtProvider jwtProvider, IEmailService emailService) 
         {
             _userStore = userStore;
             _loginCodeStore = loginCodeStore;
             _jwtProvider = jwtProvider;
+            _emailService = emailService;
         }
 
         public async Task<ServiceResult> LoginUser(string email)
@@ -30,14 +35,25 @@ namespace Shop.Application.Services
 
             // create code
 
-            int code = await _loginCodeStore.CreateLoginCodeForUser(user.Id, GenerateCode());
+            string accessСode = await _loginCodeStore.GetCodeByUser(user.Id);
+
+            int code = 1;
+
+            string generatedCode = GenerateCode();
+
+            if (string.IsNullOrEmpty(accessСode))
+                code = await _loginCodeStore.CreateLoginCodeForUser(user.Id, generatedCode);
+            else
+                return new ServiceResult(true, "Код уже отправлен");
 
             if (code == 0) 
                 return new ServiceResult(false, "Код не сохранен");
 
             // send messadge
 
-            return new ServiceResult(true, "Код отправлен");
+            string userFullName = user.Surname != null ? $"{user.Name} {user.Surname}" : user.Name;
+
+            return _emailService.SendEmail(userFullName, user.Email, generatedCode);
         }
 
         public async Task<ServiceResult> ConfirmLogin(string email, string code)
@@ -52,6 +68,8 @@ namespace Shop.Application.Services
                 return new ServiceResult(false, "Пользователь не найден");
 
             string accessСode = await _loginCodeStore.GetCodeByUser(user.Id);
+
+            if (string.IsNullOrEmpty(accessСode)) return new ServiceResult(false, "Неверный код, повторите отправку кода");
 
             if (code != accessСode)
                 return new ServiceResult(false, "Неверный код");
