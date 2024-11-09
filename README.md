@@ -9,10 +9,10 @@ path api/registration
 Body
 ``` JSON
 {
-    "name": "string",
-    "surname": "string",
-    "email": "string",
-    "phone": "string"
+  "name": "string",
+  "surname": "string",
+  "email": "string",
+  "phoneNumber": "string"
 }
 ``` 
 
@@ -24,7 +24,7 @@ path api/auth/login
 Body
 ``` JSON
 {
-    "email": "string"
+  "email": "string"
 }
 ```
 
@@ -33,7 +33,7 @@ path api/auth/confirm
 Body
 ``` JSON
 {
-    "email": "string",
-    "code": "string"
+  "email": "string",
+  "code": "string"
 }
 ```
