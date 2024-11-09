@@ -39,21 +39,25 @@ namespace Shop.Application.Services
 
             int code = 1;
 
-            string generatedCode = GenerateCode();
+            string generatedCode = "";
 
             if (string.IsNullOrEmpty(accessСode))
-                code = await _loginCodeStore.CreateLoginCodeForUser(user.Id, generatedCode);
+                generatedCode = GenerateCode();
             else
                 return new ServiceResult(true, "Код уже отправлен");
-
-            if (code == 0) 
-                return new ServiceResult(false, "Код не сохранен");
 
             // send messadge
 
             string userFullName = user.Surname != null ? $"{user.Name} {user.Surname}" : user.Name;
 
-            return _emailService.SendEmail(userFullName, user.Email, generatedCode);
+            var sendEmailResult = _emailService.SendEmail(userFullName, user.Email, generatedCode);
+
+            code = await _loginCodeStore.CreateLoginCodeForUser(user.Id, generatedCode);
+
+            if (code == 0)
+                return new ServiceResult(false, "Код не сохранен");
+
+            return sendEmailResult;
         }
 
         public async Task<ServiceResult> ConfirmLogin(string email, string code)
