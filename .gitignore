@@ -37,3 +37,6 @@ msbuild.wrn
 .vs/
 
 Shop.Data/Migrations/
+
+Shop.Api/appsettings.json
+Shop.Api/appsettings.Development.json
